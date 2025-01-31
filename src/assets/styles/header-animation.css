@@ -1,0 +1,40 @@
+/* Scale Up Effect */
+@keyframes scaleUp {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+/* Shadow Pulse Effect */
+@keyframes shadowPulse {
+  0% {
+    text-shadow: 0 0 10px rgba(34, 34, 34, 0.801),
+      0 0 5px rgba(34, 34, 34, 0.801);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(34, 34, 34, 0.801),
+      0 0 20px rgba(34, 34, 34, 0.801);
+  }
+  100% {
+    text-shadow: 0 0 15px rgba(34, 34, 34, 0.801),
+      0 0 30px rgba(34, 34, 34, 0.801);
+  }
+}
+
+/* Bounce In Effect (for added effect when loading) */
+@keyframes bounceIn {
+  0% {
+    transform: translateY(-2000px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(30px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

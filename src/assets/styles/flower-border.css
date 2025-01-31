@@ -1,0 +1,34 @@
+.flower-border {
+  position: relative;
+  height: 5px;
+  margin: 0 auto;
+  background: linear-gradient(
+    to right,
+    #f7a7c7,
+    #f4a1d3,
+    #f9d8e6,
+    #f7a7c7
+  );
+  width: 100%;
+  border-radius: 10px;
+}
+
+.flower-border::before,
+.flower-border::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  background-color: #ff4081; /* Flower-like pink color */
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 64, 129, 0.6);
+}
+
+.flower-border::before {
+  left: -5px; /* Positioning left flower */
+}
+
+.flower-border::after {
+  right: -5px; /* Positioning right flower */
+}
