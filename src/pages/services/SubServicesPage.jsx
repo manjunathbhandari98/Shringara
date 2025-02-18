@@ -20,7 +20,7 @@ const SubServicesPage = () => {
         {service.subServices.map((sub, index) => (
           <div
             key={index}
-            className="p-4 bg-gray-100 rounded-lg shadow-md"
+            className="p-4 bg-black text-white rounded-lg shadow-md"
           >
             <img
               src={
@@ -28,7 +28,7 @@ const SubServicesPage = () => {
                 "https://via.placeholder.com/150"
               }
               alt={sub.subTitle}
-              className="w-full h-32 object-cover rounded-lg"
+              className="w-full h-60 object-cover rounded-lg"
             />
             <h3 className="mt-2 text-lg font-semibold">
               {sub.subTitle}

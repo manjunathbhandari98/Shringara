@@ -12,9 +12,10 @@ import Portfolio from "./pages/portfolio/Portfolio";
 import Services from "./pages/services/Services";
 import Review from "./pages/Review";
 import NotFound from "./pages/NotFound";
-import SubServicesPage from "./pages/services/subServicesPage";
+import SubServicesPage from "./pages/services/SubServicesPage";
 import ScrollToTop from "./utility/ScrollToTop";
 import AboutUs from "./pages/AboutUs";
+import Auth from "./pages/auth/Auth";
 
 const App = () => {
   return (
@@ -57,6 +58,10 @@ const App = () => {
         <Route
           path="/about-us"
           element={<AboutUs />}
+        />
+        <Route
+          path="/auth"
+          element={<Auth />}
         />
         {/* Catch-all Route for non-existing URLs */}
         {/* If someone types anything else, redirect to Home */}

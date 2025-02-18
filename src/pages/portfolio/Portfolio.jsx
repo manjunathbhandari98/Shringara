@@ -14,6 +14,7 @@ import {
 } from "./portfolioData";
 import ImageCard from "./ImageCard";
 import TestimonialCard from "./TestimonialCard";
+import { Link } from "react-router-dom";
 
 const Portfolio = () => {
   const [
@@ -211,13 +212,15 @@ const Portfolio = () => {
               but the best. Let&apos;s make it
               happen!
             </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="bg-rose-500 text-white px-8 py-3 rounded-full text-lg hover:bg-rose-600 transition-colors inline-flex items-center gap-2"
-            >
-              Get in Touch
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
+            <Link to="/contact">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="bg-rose-500 text-white px-8 py-3 rounded-full text-lg hover:bg-rose-600 transition-colors inline-flex items-center gap-2"
+              >
+                Get in Touch
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </Link>
           </motion.div>
         </div>
       </section>
