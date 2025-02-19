@@ -16,6 +16,7 @@ import SubServicesPage from "./pages/services/SubServicesPage";
 import ScrollToTop from "./utility/ScrollToTop";
 import AboutUs from "./pages/AboutUs";
 import Auth from "./pages/auth/Auth";
+import Settings from "./pages/settings";
 
 const App = () => {
   return (
@@ -58,6 +59,10 @@ const App = () => {
         <Route
           path="/about-us"
           element={<AboutUs />}
+        />
+        <Route
+          path="/settings"
+          element={<Settings />}
         />
         <Route
           path="/auth"

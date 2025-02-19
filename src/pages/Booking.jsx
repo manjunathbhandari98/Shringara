@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useUser } from "./../hooks/useUser";
+import { bookAnEvent } from "../services/bookingService";
 
 const Booking = () => {
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
     eventType: "",
+    location: "",
+    service: "",
     eventDate: "",
     message: "",
   });
@@ -18,12 +26,39 @@ const Booking = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Booking Details:", formData);
-    alert(
-      "🎉 Your booking request has been submitted!"
-    );
+    try {
+      const response = await bookAnEvent({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        eventType: formData.eventType,
+        location: formData.location,
+        service: formData.service,
+        eventDate: formData.eventDate,
+        message: formData.message,
+      });
+      setSuccess(
+        response.message || "Signup successful!"
+      );
+      setFormData({
+        name: user?.name || "",
+        email: user?.email || "",
+        phone: user?.phone || "",
+        eventType: "",
+        location: "",
+        eventDate: "",
+        service: "",
+        message: "",
+      });
+    } catch (err) {
+      setError(
+        err.message || "Something went wrong!"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,9 +108,47 @@ const Booking = () => {
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
           />
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={formData.location}
+            onChange={handleChange}
+            required
+            className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+          />
           <select
             name="eventType"
             value={formData.eventType}
+            onChange={handleChange}
+            required
+            className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+          >
+            <option
+              value=""
+              disabled
+            >
+              Select Event Type
+            </option>
+            <option value="wedding">
+              💍 Wedding
+            </option>
+            <option value="birthday">
+              🎂 Birthday Party
+            </option>
+            <option value="corporate">
+              🏢 Corporate Event
+            </option>
+            <option value="anniversary">
+              ❤️ Anniversary
+            </option>
+            <option value="others">
+              ✨ Others
+            </option>
+          </select>
+          <select
+            name="service"
+            value={formData.service}
             onChange={handleChange}
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"

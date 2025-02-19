@@ -122,7 +122,7 @@ const Navbar = () => {
           onClick={() =>
             setShowDropdown(!showDropdown)
           }
-          className="focus:outline-none"
+          className="focus:outline-none cursor-pointer"
         >
           {user && user.name ? (
             <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full text-white text-lg font-semibold">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { signupUser } from "../../services/AuthService";
+import InputField from "../../components/InputField";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -81,54 +82,49 @@ const Signup = () => {
         onSubmit={handleSubmit}
         className="space-y-4"
       >
-        <input
+        <InputField
           type="text"
           name="name"
           placeholder="Full Name"
           value={formData.name}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
         />
-        <input
+
+        <InputField
           type="email"
           name="email"
           placeholder="Email Address"
           value={formData.email}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
         />
-        <input
+
+        <InputField
           type="password"
           name="password"
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
         />
-        <input
+
+        <InputField
           type="password"
           name="confirmPassword"
           placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
         />
-        <input
+
+        <InputField
           type="tel"
           name="phone"
           placeholder="Phone Number"
           value={formData.phone}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
         />
+
         <button
           type="submit"
-          className="w-full py-3 bg-gradient-to-r from-[#ff4d97] to-[#F36C3E] text-gray-900 font-semibold rounded-lg hover:scale-105 transform transition duration-300"
+          className="cursor-pointer w-full py-3 bg-gradient-to-r from-[#ff4d97] to-[#F36C3E] text-gray-900 font-semibold rounded-lg hover:scale-105 transform transition duration-300"
           disabled={loading}
         >
           {loading ? "Signing Up..." : "Sign Up"}

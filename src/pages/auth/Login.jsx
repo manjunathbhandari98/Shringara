@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { loginUser } from "../../services/AuthService";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
+import InputField from "../../components/InputField";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -58,6 +59,13 @@ const Login = () => {
     }
   };
 
+  const handleFocus = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div>
       <h2 className="text-3xl font-bold text-center mb-6">
@@ -68,24 +76,24 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="space-y-4"
       >
-        <input
+        <InputField
           type="email"
           name="email"
           placeholder="Email Address"
           value={formData.email}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+          onFocus={handleFocus}
         />
-        <input
+
+        <InputField
           type="password"
           name="password"
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          required
-          className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+          onFocus={handleFocus}
         />
+
         <button
           type="submit"
           disabled={loading}

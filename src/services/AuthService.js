@@ -92,6 +92,32 @@ export const getUserInfo = async () => {
   }
 };
 
+// Update User user info
+export const updateUser = async (updateData) => {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/auth/update`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data || {
+        message:
+          "Failed to update user information",
+      }
+    );
+  }
+};
+
 // Secure API request with JWT token
 export const getProtectedData = async (
   endpoint
