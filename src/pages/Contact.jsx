@@ -1,11 +1,24 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone } from "lucide-react";
+import {
+  motion,
+  AnimatePresence,
+} from "framer-motion";
+import {
+  Mail,
+  Phone,
+  CheckCircleIcon,
+} from "lucide-react";
+import { sendAMessage } from "../services/messageService";
+import { useUser } from "../hooks/useUser";
 
 const Contact = () => {
+  const [success, setSuccess] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
+  const { user } = useUser();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: user?.name || "",
+    email: user?.email || "",
     message: "",
   });
 
@@ -16,9 +29,45 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("📩 Your message has been sent!");
+    setLoading(true);
+    try {
+      const message = {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      };
+
+      const response = await sendAMessage(
+        message
+      );
+
+      setSuccess("Message Sent successfully!");
+      setFormData({
+        name: user?.name || "",
+        email: user?.email || "",
+        message: "",
+      });
+
+      setTimeout(() => {
+        // Clear messages after 3 seconds
+        setSuccess(null);
+        setError(null);
+      }, 3000);
+    } catch (err) {
+      setError(
+        err.message || "Something went wrong!"
+      );
+
+      setTimeout(() => {
+        // Clear messages after 3 seconds
+        setSuccess(null);
+        setError(null);
+      }, 3000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -88,8 +137,35 @@ const Contact = () => {
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-[#ff4d97] to-[#F36C3E] text-gray-900 font-semibold rounded-lg hover:scale-105 transform transition duration-300"
           >
-            ✉️ Send Message
+            {loading
+              ? "Sending Message..."
+              : "✉️ Send Message"}
           </button>
+          <AnimatePresence>
+            {" "}
+            {/* Animate success/error messages */}
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-green-500 mt-2 flex items-center"
+              >
+                <CheckCircleIcon className="w-5 h-5 mr-2" />
+                {success}
+              </motion.div>
+            )}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-red-500 mt-2"
+              >
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </form>
       </motion.div>
     </div>

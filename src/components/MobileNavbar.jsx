@@ -173,7 +173,7 @@ const MobileNavbar = () => {
               Services
             </Link>
           </div>
-          <div className="flex space-x-2 items-center">
+          {/* <div className="flex space-x-2 items-center">
             <Package />
             <Link
               onClick={() => setToggleMenu(false)}
@@ -181,7 +181,7 @@ const MobileNavbar = () => {
             >
               Packages
             </Link>
-          </div>
+          </div> */}
           <div className="flex space-x-2 items-center">
             <GalleryHorizontal />
             <Link

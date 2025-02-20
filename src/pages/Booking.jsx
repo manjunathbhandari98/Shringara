@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "./../hooks/useUser";
 import { bookAnEvent } from "../services/bookingService";
+import { useService } from "../hooks/useService";
 
 const Booking = () => {
   const { user } = useUser();
+  const { services } = useService();
+
   const [loading, setLoading] = useState(false);
+  const [serviceId, setServiceId] = useState();
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [selectedService, setSelectedService] =
+    useState("");
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -15,32 +21,73 @@ const Booking = () => {
     eventType: "",
     location: "",
     service: "",
+    subService: "",
     eventDate: "",
-    message: "",
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "service") {
+      setSelectedService(value); // Update selected service
+      setFormData({
+        ...formData,
+        service: value,
+        subService: "",
+      }); // Reset sub-service on service change
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      const response = await bookAnEvent({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        eventType: formData.eventType,
+      // Find selected service object
+      const selectedServiceObj = services.find(
+        (service) =>
+          service.name === formData.service
+      );
+      const selectedSubServiceObj =
+        selectedServiceObj?.subServices.find(
+          (sub) =>
+            sub.name === formData.subService
+        );
+
+      if (
+        !selectedServiceObj ||
+        !selectedSubServiceObj
+      ) {
+        throw new Error(
+          "Invalid service or sub-service selection."
+        );
+      }
+
+      // Extract total price from the selected sub-service
+      const totalPrice =
+        selectedSubServiceObj.price; // Assuming price exists in sub-service
+
+      // Prepare the correct data with IDs
+      const bookingData = {
+        userId: user?.id, // Assuming user object contains an 'id'
+        serviceId: selectedServiceObj.id,
+        subServiceId: selectedSubServiceObj.id,
         location: formData.location,
-        service: formData.service,
         eventDate: formData.eventDate,
-        message: formData.message,
-      });
+        totalPrice: totalPrice,
+      };
+
+      console.log(bookingData);
+
+      // Send the correct data to the API
+      const response = await bookAnEvent(
+        bookingData
+      );
+
       setSuccess(
-        response.message || "Signup successful!"
+        response.message || "Booking successful!"
       );
       setFormData({
         name: user?.name || "",
@@ -48,10 +95,11 @@ const Booking = () => {
         phone: user?.phone || "",
         eventType: "",
         location: "",
-        eventDate: "",
         service: "",
-        message: "",
+        subService: "",
+        eventDate: "",
       });
+      setSelectedService("");
     } catch (err) {
       setError(
         err.message || "Something went wrong!"
@@ -60,6 +108,15 @@ const Booking = () => {
       setLoading(false);
     }
   };
+
+  // Get selected service object
+  const selectedServiceObj = services.find(
+    (service) => service.name === selectedService
+  );
+
+  // Get sub-services of selected service (if available)
+  const subServices =
+    selectedServiceObj?.subServices || [];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white p-6 relative overflow-hidden">
@@ -117,35 +174,8 @@ const Booking = () => {
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
           />
-          <select
-            name="eventType"
-            value={formData.eventType}
-            onChange={handleChange}
-            required
-            className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
-          >
-            <option
-              value=""
-              disabled
-            >
-              Select Event Type
-            </option>
-            <option value="wedding">
-              💍 Wedding
-            </option>
-            <option value="birthday">
-              🎂 Birthday Party
-            </option>
-            <option value="corporate">
-              🏢 Corporate Event
-            </option>
-            <option value="anniversary">
-              ❤️ Anniversary
-            </option>
-            <option value="others">
-              ✨ Others
-            </option>
-          </select>
+
+          {/* Service Selection */}
           <select
             name="service"
             value={formData.service}
@@ -157,24 +187,45 @@ const Booking = () => {
               value=""
               disabled
             >
-              Select Event Type
+              Select a Service
             </option>
-            <option value="wedding">
-              💍 Wedding
-            </option>
-            <option value="birthday">
-              🎂 Birthday Party
-            </option>
-            <option value="corporate">
-              🏢 Corporate Event
-            </option>
-            <option value="anniversary">
-              ❤️ Anniversary
-            </option>
-            <option value="others">
-              ✨ Others
-            </option>
+            {services.map((service) => (
+              <option
+                key={service.id}
+                value={service.name}
+              >
+                {service.name}
+              </option>
+            ))}
           </select>
+
+          {/* Sub-Service Selection (Disabled if no service is selected) */}
+          <select
+            name="subService"
+            value={formData.subService}
+            onChange={handleChange}
+            disabled={!selectedService}
+            required
+            className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <option
+              value=""
+              disabled
+            >
+              {selectedService
+                ? "Select a Sub-Service"
+                : "Select a Service First"}
+            </option>
+            {subServices.map((subService) => (
+              <option
+                key={subService.id}
+                value={subService.name}
+              >
+                {subService.name}
+              </option>
+            ))}
+          </select>
+
           <input
             type="date"
             name="eventDate"
@@ -183,18 +234,14 @@ const Booking = () => {
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
           />
-          <textarea
-            name="message"
-            placeholder="Additional Details (optional)"
-            value={formData.message}
-            onChange={handleChange}
-            className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
-          ></textarea>
           <button
             type="submit"
+            disabled={loading}
             className="w-full py-3 bg-gradient-to-r from-[#ff4d97] to-[#F36C3E] text-gray-900 font-semibold rounded-lg hover:scale-105 transform transition duration-300"
           >
-            Submit Booking
+            {loading
+              ? "Booking..."
+              : "Submit Booking"}
           </button>
         </form>
       </motion.div>

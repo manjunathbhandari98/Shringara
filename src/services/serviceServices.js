@@ -112,7 +112,7 @@ export const getSubServices = async (
 ) => {
   try {
     const response = await axios.get(
-      `${BASE_URL}/services/${serviceId}/subservices`
+      `${BASE_URL}/services/${serviceId}`
     );
     return response.data;
   } catch (error) {

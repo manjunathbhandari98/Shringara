@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
 } from "react";
 import {
   Link,
@@ -16,16 +17,17 @@ import NavOption from "./NavOption";
 import { useUser } from "../hooks/useUser";
 
 const Navbar = () => {
-  const navigate = useNavigate(); // Track the user
+  const navigate = useNavigate();
   const [showDropdown, setShowDropdown] =
     useState(false);
   const { user, setUserInfo } = useUser();
+  const dropdownRef = useRef(null); // Ref for dropdown menu
 
   const fetchUser = async () => {
     try {
       const userData = await getUserInfo();
       console.log("Fetched User:", userData);
-      setUserInfo(userData); // Store user data in context
+      setUserInfo(userData);
     } catch (error) {
       console.error(
         "Error fetching user data:",
@@ -35,32 +37,56 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    fetchUser(); // Fetch user when component mounts
-
-    // Listen for storage changes (Login & Logout)
+    fetchUser();
     const handleStorageChange = () => {
-      fetchUser(); // Fetch user again when localStorage updates
+      fetchUser();
     };
 
     window.addEventListener(
       "storage",
       handleStorageChange
     );
-
     return () => {
       window.removeEventListener(
         "storage",
         handleStorageChange
       );
     };
-  }, []); // This effect will only run once when the component mounts
+  }, []);
 
-  // Handle Logout
+  // Hide dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(
+          event.target
+        )
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    }
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, [showDropdown]);
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
-    setUserInfo(null); // Clear user from context
-    window.dispatchEvent(new Event("storage")); // Notify other components
+    setUserInfo(null);
+    window.dispatchEvent(new Event("storage"));
     navigate("/");
   };
 
@@ -76,7 +102,6 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* Navbar options */}
       <div className="space-x-8 font-[400]">
         <NavOption
           color="red"
@@ -92,19 +117,15 @@ const Navbar = () => {
         </NavOption>
         <NavOption
           color="red"
-          to="/packages"
-        >
-          Packages
-        </NavOption>
-        <NavOption
-          color="red"
           to="/portfolio"
         >
           Portfolio
         </NavOption>
         <NavOption
           color="red"
-          to="/booking"
+          to={
+            user ? "/booking" : "/auth?mode=login"
+          }
         >
           Booking
         </NavOption>
@@ -117,7 +138,10 @@ const Navbar = () => {
       </div>
 
       {/* Profile Section */}
-      <div className="relative pr-8">
+      <div
+        className="relative pr-8"
+        ref={dropdownRef}
+      >
         <button
           onClick={() =>
             setShowDropdown(!showDropdown)
@@ -126,8 +150,7 @@ const Navbar = () => {
         >
           {user && user.name ? (
             <div className="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full text-white text-lg font-semibold">
-              {user.name.charAt(0).toUpperCase()}{" "}
-              {/* This will show the first letter of the name */}
+              {user.name.charAt(0).toUpperCase()}
             </div>
           ) : (
             <img

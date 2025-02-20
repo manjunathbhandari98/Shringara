@@ -100,9 +100,6 @@ const Home = () => {
 
       {/* Testimonials */}
       <Testimonials />
-
-      {/* Contact Form */}
-      <ContactForm />
     </>
   );
 };
