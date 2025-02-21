@@ -44,7 +44,7 @@ export const signupUser = async (userData) => {
 export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/auth/login`,
+      `${BASE_URL}/auth/user/login`,
       credentials,
       {
         headers: {
