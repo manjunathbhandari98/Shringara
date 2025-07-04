@@ -1,14 +1,11 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env
-  .VITE_REACT_APP_API_URL;
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 // Fetch all services
 export const getAllServices = async () => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/services`
-    );
+    const response = await axios.get(`${BASE_URL}/services`);
     return response.data;
   } catch (error) {
     throw (
@@ -20,13 +17,9 @@ export const getAllServices = async () => {
 };
 
 // Fetch a single service by ID
-export const getServiceById = async (
-  serviceId
-) => {
+export const getServiceById = async (serviceId) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/services/${serviceId}`
-    );
+    const response = await axios.get(`${BASE_URL}/services/${serviceId}`);
     return response.data;
   } catch (error) {
     throw (
@@ -38,19 +31,13 @@ export const getServiceById = async (
 };
 
 // Create a new service
-export const createService = async (
-  serviceData
-) => {
+export const createService = async (serviceData) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/services`,
-      serviceData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(`${BASE_URL}/services`, serviceData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     throw (
@@ -62,10 +49,7 @@ export const createService = async (
 };
 
 // Update an existing service
-export const updateService = async (
-  serviceId,
-  updateData
-) => {
+export const updateService = async (serviceId, updateData) => {
   try {
     const response = await axios.put(
       `${BASE_URL}/services/${serviceId}`,
@@ -87,13 +71,9 @@ export const updateService = async (
 };
 
 // Delete a service
-export const deleteService = async (
-  serviceId
-) => {
+export const deleteService = async (serviceId) => {
   try {
-    await axios.delete(
-      `${BASE_URL}/services/${serviceId}`
-    );
+    await axios.delete(`${BASE_URL}/services/${serviceId}`);
     return {
       message: "Service deleted successfully",
     };
@@ -107,13 +87,9 @@ export const deleteService = async (
 };
 
 // Fetch all subservices of a service
-export const getSubServices = async (
-  serviceId
-) => {
+export const getSubServices = async (serviceId) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/services/${serviceId}`
-    );
+    const response = await axios.get(`${BASE_URL}/services/${serviceId}`);
     return response.data;
   } catch (error) {
     throw (
@@ -125,13 +101,9 @@ export const getSubServices = async (
 };
 
 // Fetch a single subservice by ID
-export const getSubServiceById = async (
-  subServiceId
-) => {
+export const getSubServiceById = async (subServiceId) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/subservices/${subServiceId}`
-    );
+    const response = await axios.get(`${BASE_URL}/subservices/${subServiceId}`);
     return response.data;
   } catch (error) {
     throw (
@@ -143,10 +115,7 @@ export const getSubServiceById = async (
 };
 
 // Create a new subservice
-export const createSubService = async (
-  serviceId,
-  subServiceData
-) => {
+export const createSubService = async (serviceId, subServiceData) => {
   try {
     const response = await axios.post(
       `${BASE_URL}/services/${serviceId}/subservices`,
@@ -168,10 +137,7 @@ export const createSubService = async (
 };
 
 // Update an existing subservice
-export const updateSubService = async (
-  subServiceId,
-  updateData
-) => {
+export const updateSubService = async (subServiceId, updateData) => {
   try {
     const response = await axios.put(
       `${BASE_URL}/subservices/${subServiceId}`,
@@ -182,6 +148,7 @@ export const updateSubService = async (
         },
       }
     );
+
     return response.data;
   } catch (error) {
     throw (
@@ -193,13 +160,9 @@ export const updateSubService = async (
 };
 
 // Delete a subservice
-export const deleteSubService = async (
-  subServiceId
-) => {
+export const deleteSubService = async (subServiceId) => {
   try {
-    await axios.delete(
-      `${BASE_URL}/subservices/${subServiceId}`
-    );
+    await axios.delete(`${BASE_URL}/subservices/${subServiceId}`);
     return {
       message: "Subservice deleted successfully",
     };

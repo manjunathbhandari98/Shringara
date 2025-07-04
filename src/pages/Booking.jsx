@@ -1,8 +1,8 @@
-import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useUser } from "./../hooks/useUser";
-import { bookAnEvent } from "../services/bookingService";
+import { useState } from "react";
 import { useService } from "../hooks/useService";
+import { bookAnEvent } from "../services/bookingService";
+import { useUser } from "./../hooks/useUser";
 
 const Booking = () => {
   const { user } = useUser();
@@ -12,8 +12,7 @@ const Booking = () => {
   const [serviceId, setServiceId] = useState();
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [selectedService, setSelectedService] =
-    useState("");
+  const [selectedService, setSelectedService] = useState("");
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -47,27 +46,18 @@ const Booking = () => {
     try {
       // Find selected service object
       const selectedServiceObj = services.find(
-        (service) =>
-          service.name === formData.service
+        (service) => service.name === formData.service
       );
-      const selectedSubServiceObj =
-        selectedServiceObj?.subServices.find(
-          (sub) =>
-            sub.name === formData.subService
-        );
+      const selectedSubServiceObj = selectedServiceObj?.subServices.find(
+        (sub) => sub.name === formData.subService
+      );
 
-      if (
-        !selectedServiceObj ||
-        !selectedSubServiceObj
-      ) {
-        throw new Error(
-          "Invalid service or sub-service selection."
-        );
+      if (!selectedServiceObj || !selectedSubServiceObj) {
+        throw new Error("Invalid service or sub-service selection.");
       }
 
       // Extract total price from the selected sub-service
-      const totalPrice =
-        selectedSubServiceObj.price; // Assuming price exists in sub-service
+      const totalPrice = selectedSubServiceObj.price; // Assuming price exists in sub-service
 
       // Prepare the correct data with IDs
       const bookingData = {
@@ -77,18 +67,13 @@ const Booking = () => {
         location: formData.location,
         eventDate: formData.eventDate,
         totalPrice: totalPrice,
+        status: "Pending",
       };
 
-      console.log(bookingData);
-
       // Send the correct data to the API
-      const response = await bookAnEvent(
-        bookingData
-      );
+      const response = await bookAnEvent(bookingData);
 
-      setSuccess(
-        response.message || "Booking successful!"
-      );
+      setSuccess(response.message || "Booking successful!");
       setFormData({
         name: user?.name || "",
         email: user?.email || "",
@@ -101,9 +86,7 @@ const Booking = () => {
       });
       setSelectedService("");
     } catch (err) {
-      setError(
-        err.message || "Something went wrong!"
-      );
+      setError(err.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
@@ -115,8 +98,7 @@ const Booking = () => {
   );
 
   // Get sub-services of selected service (if available)
-  const subServices =
-    selectedServiceObj?.subServices || [];
+  const subServices = selectedServiceObj?.subServices || [];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white p-6 relative overflow-hidden">
@@ -134,10 +116,7 @@ const Booking = () => {
         <h2 className="text-3xl font-bold text-center mb-6">
           🎟 Book Your Event
         </h2>
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-        >
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             name="name"
@@ -183,17 +162,11 @@ const Booking = () => {
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
           >
-            <option
-              value=""
-              disabled
-            >
+            <option value="" disabled>
               Select a Service
             </option>
             {services.map((service) => (
-              <option
-                key={service.id}
-                value={service.name}
-              >
+              <option key={service.id} value={service.name}>
                 {service.name}
               </option>
             ))}
@@ -208,19 +181,13 @@ const Booking = () => {
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <option
-              value=""
-              disabled
-            >
+            <option value="" disabled>
               {selectedService
                 ? "Select a Sub-Service"
                 : "Select a Service First"}
             </option>
             {subServices.map((subService) => (
-              <option
-                key={subService.id}
-                value={subService.name}
-              >
+              <option key={subService.id} value={subService.name}>
                 {subService.name}
               </option>
             ))}
@@ -239,9 +206,7 @@ const Booking = () => {
             disabled={loading}
             className="w-full py-3 bg-gradient-to-r from-[#ff4d97] to-[#F36C3E] text-gray-900 font-semibold rounded-lg hover:scale-105 transform transition duration-300"
           >
-            {loading
-              ? "Booking..."
-              : "Submit Booking"}
+            {loading ? "Booking..." : "Submit Booking"}
           </button>
         </form>
       </motion.div>

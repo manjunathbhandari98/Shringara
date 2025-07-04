@@ -1,54 +1,34 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
 import {
   ArrowLeft,
   CalendarFold,
   Contact,
   GalleryHorizontal,
   HomeIcon,
-  LogOutIcon,
-  LucideLogOut,
   Menu,
-  Package,
   Paintbrush2,
   Power,
-  PowerOff,
-  PowerOffIcon,
   Settings,
 } from "lucide-react";
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/images/logo.png";
-import Button from "./Button";
-import {
-  getAuthToken,
-  getUserInfo,
-} from "../services/AuthService"; // Ensure getUserInfo is implemented properly
 import ProfileImage from "../assets/images/user.png";
 import { useUser } from "../hooks/useUser";
+import { getUserInfo } from "../services/AuthService"; // Ensure getUserInfo is implemented properly
+import Button from "./Button";
 
 const MobileNavbar = () => {
-  const [toggleMenu, setToggleMenu] =
-    useState(false);
+  const [toggleMenu, setToggleMenu] = useState(false);
   const navigate = useNavigate();
   const { user, setUserInfo } = useUser();
-  const [showLogoutModal, setShowLogoutModal] =
-    useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const fetchUser = async () => {
     try {
       const userData = await getUserInfo();
-      console.log("Fetched User:", userData);
       setUserInfo(userData); // Store user data in context
     } catch (error) {
-      console.error(
-        "Error fetching user data:",
-        error
-      );
+      console.error("Error fetching user data:", error);
     }
   };
 
@@ -60,16 +40,10 @@ const MobileNavbar = () => {
       fetchUser(); // Fetch user again when localStorage updates
     };
 
-    window.addEventListener(
-      "storage",
-      handleStorageChange
-    );
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      window.removeEventListener(
-        "storage",
-        handleStorageChange
-      );
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []); // This effect will only run once when the component mounts
 
@@ -116,37 +90,25 @@ const MobileNavbar = () => {
   return (
     <div className="sm:hidden flex bg-transparent text-white z-10 justify-between">
       {/* Menu Button */}
-      <div
-        className="menu-btn mt-5 mx-4 cursor-pointer"
-        onClick={handleToggle}
-      >
+      <div className="menu-btn mt-5 mx-4 cursor-pointer" onClick={handleToggle}>
         <Menu />
       </div>
 
       {/* Slide-in Menu */}
       <div
         className={`fixed top-0 left-0 h-screen w-2/3 bg-black text-white transition-transform transform ${
-          toggleMenu
-            ? "translate-x-0 z-50"
-            : "-translate-x-full"
+          toggleMenu ? "translate-x-0 z-50" : "-translate-x-full"
         }`}
       >
         {/* Close Button */}
         <div className="flex p-4 justify-between">
           <div className="">
-            <ArrowLeft
-              className="cursor-pointer"
-              onClick={handleToggle}
-            />
+            <ArrowLeft className="cursor-pointer" onClick={handleToggle} />
           </div>
           {user ? (
             <div className="flex space-x-2 items-center">
               <h2>{user.name.toUpperCase()}</h2>
-              <img
-                src={ProfileImage}
-                alt="Profile"
-                className="w-7 h-7"
-              />
+              <img src={ProfileImage} alt="Profile" className="w-7 h-7" />
             </div>
           ) : (
             <></>
@@ -156,20 +118,14 @@ const MobileNavbar = () => {
         <nav className="flex flex-col items-start px-5 text-white ml-4 space-y-6 mt-10 text-xl">
           <div className="flex space-x-2 items-center">
             <HomeIcon />
-            <Link
-              onClick={() => setToggleMenu(false)}
-              to="/"
-            >
+            <Link onClick={() => setToggleMenu(false)} to="/">
               Home
             </Link>
           </div>
 
           <div className="flex space-x-2 items-center">
             <Paintbrush2 />
-            <Link
-              onClick={() => setToggleMenu(false)}
-              to="/services"
-            >
+            <Link onClick={() => setToggleMenu(false)} to="/services">
               Services
             </Link>
           </div>
@@ -184,28 +140,19 @@ const MobileNavbar = () => {
           </div> */}
           <div className="flex space-x-2 items-center">
             <GalleryHorizontal />
-            <Link
-              onClick={() => setToggleMenu(false)}
-              to="/portfolio"
-            >
+            <Link onClick={() => setToggleMenu(false)} to="/portfolio">
               Portfolio
             </Link>
           </div>
           <div className="flex space-x-2 items-center">
             <CalendarFold />
-            <Link
-              onClick={() => setToggleMenu(false)}
-              to="/booking"
-            >
+            <Link onClick={() => setToggleMenu(false)} to="/booking">
               Booking
             </Link>
           </div>
           <div className="flex space-x-2 items-center">
             <Contact />
-            <Link
-              onClick={() => setToggleMenu(false)}
-              to="/contact"
-            >
+            <Link onClick={() => setToggleMenu(false)} to="/contact">
               Contact
             </Link>
           </div>
@@ -215,9 +162,7 @@ const MobileNavbar = () => {
         {user ? (
           <div className="flex justify-between w-full absolute bottom-22 px-4">
             <button
-              onClick={() =>
-                setShowLogoutModal(true)
-              }
+              onClick={() => setShowLogoutModal(true)}
               className="flex space-x-2 items-center"
             >
               <Power />
@@ -279,11 +224,7 @@ const MobileNavbar = () => {
 
       <div>
         <Link to="/">
-          <img
-            src={Logo}
-            alt="Logo"
-            width="80px"
-          />
+          <img src={Logo} alt="Logo" width="80px" />
         </Link>
       </div>
     </div>

@@ -1,16 +1,49 @@
-import React from "react";
 import {
-  Sparkles,
-  Phone,
-  Mail,
-  Instagram,
   Facebook,
-  Twitter,
+  Instagram,
+  Mail,
+  Phone,
+  Twitter
 } from "lucide-react";
-import Logo from "../assets/images/logo.png";
+import {
+  useEffect,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
+import { getSettings } from "../services/settings";
 
 const Footer = () => {
+  const [app, setApp] = useState();
+  const [logo, setLogo] = useState();
+  const [contact, setContact] = useState({
+    email: "",
+    phone: "",
+  });
+  const [socialMedia, setSocialMedia] = useState({
+    insta: "",
+    fb: "",
+    x: "",
+  });
+
+  const fetchSettings = async () => {
+    const response = await getSettings();
+    setApp(response.appName);
+    setLogo(response.logoUrl);
+    setContact({
+      email: response.email,
+      phone: response.phone,
+    });
+    setSocialMedia({
+      insta: response.instaUrl,
+      fb: response.fbUrl,
+      x: response.xurl,
+    });
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  },[]);
+
   return (
     <footer className="bg-black border-t-1 text-white py-12">
       <div className="container mx-auto px-4">
@@ -19,7 +52,7 @@ const Footer = () => {
             <div className="text-2xl font-bold">
               <Link to="/">
                 <img
-                  src={Logo}
+                  src={logo}
                   alt=""
                   width={100}
                 />
@@ -77,11 +110,11 @@ const Footer = () => {
             <ul className="space-y-2 text-gray-400">
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-2" />
-                +91 938-849-3894
+                {contact.phone}
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-2" />
-                info@shringara.com
+                {contact.email}
               </li>
             </ul>
           </div>
@@ -91,19 +124,19 @@ const Footer = () => {
             </h4>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href={socialMedia.insta}
                 className="hover:text-rose-500"
               >
                 <Instagram className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href={socialMedia.fb}
                 className="hover:text-rose-500"
               >
                 <Facebook className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href={socialMedia.x}
                 className="hover:text-rose-500"
               >
                 <Twitter className="h-6 w-6" />
@@ -113,7 +146,7 @@ const Footer = () => {
         </div>
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
           <p>
-            &copy; 2024 Shringara Decorators. All
+            &copy; 2024 {app} Decorators. All
             rights reserved.
           </p>
         </div>

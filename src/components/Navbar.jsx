@@ -1,84 +1,58 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-} from "react";
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
-import Logo from "../assets/images/logo.png";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileImage from "../assets/images/user.png";
-import {
-  logoutUser,
-  getUserInfo,
-} from "../services/AuthService";
-import NavOption from "./NavOption";
 import { useUser } from "../hooks/useUser";
+import { getUserInfo } from "../services/AuthService";
+import { getSettings } from "../services/settings";
+import NavOption from "./NavOption";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] =
-    useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const { user, setUserInfo } = useUser();
   const dropdownRef = useRef(null); // Ref for dropdown menu
-
-  const fetchUser = async () => {
-    try {
-      const userData = await getUserInfo();
-      console.log("Fetched User:", userData);
-      setUserInfo(userData);
-    } catch (error) {
-      console.error(
-        "Error fetching user data:",
-        error
-      );
-    }
-  };
+  const [logo, setLogo] = useState();
 
   useEffect(() => {
+    const fetchLogo = async () => {
+      const response = await getSettings();
+      setLogo(response.logoUrl);
+    };
+
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserInfo();
+        setUserInfo(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchLogo();
     fetchUser();
     const handleStorageChange = () => {
       fetchUser();
     };
 
-    window.addEventListener(
-      "storage",
-      handleStorageChange
-    );
+    window.addEventListener("storage", handleStorageChange);
     return () => {
-      window.removeEventListener(
-        "storage",
-        handleStorageChange
-      );
+      window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  }, [setUserInfo]);
 
   // Hide dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(
-          event.target
-        )
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
     };
 
     if (showDropdown) {
-      document.addEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showDropdown]);
 
@@ -94,58 +68,32 @@ const Navbar = () => {
     <div className="sm:flex hidden justify-between items-center py-4 px-8 bg-transparent text-white">
       <div className="text-2xl font-bold">
         <Link to="/">
-          <img
-            src={Logo}
-            alt="Logo"
-            width={100}
-          />
+          <img src={logo} alt="Shringara" width={100} />
         </Link>
       </div>
 
       <div className="space-x-8 font-[400]">
-        <NavOption
-          color="red"
-          to="/"
-        >
+        <NavOption color="red" to="/">
           Home
         </NavOption>
-        <NavOption
-          color="red"
-          to="/services"
-        >
+        <NavOption color="red" to="/services">
           Services
         </NavOption>
-        <NavOption
-          color="red"
-          to="/portfolio"
-        >
+        <NavOption color="red" to="/portfolio">
           Portfolio
         </NavOption>
-        <NavOption
-          color="red"
-          to={
-            user ? "/booking" : "/auth?mode=login"
-          }
-        >
+        <NavOption color="red" to={user ? "/booking" : "/auth?mode=login"}>
           Booking
         </NavOption>
-        <NavOption
-          color="red"
-          to="/contact"
-        >
+        <NavOption color="red" to="/contact">
           Contact
         </NavOption>
       </div>
 
       {/* Profile Section */}
-      <div
-        className="relative pr-8"
-        ref={dropdownRef}
-      >
+      <div className="relative pr-8" ref={dropdownRef}>
         <button
-          onClick={() =>
-            setShowDropdown(!showDropdown)
-          }
+          onClick={() => setShowDropdown(!showDropdown)}
           className="focus:outline-none cursor-pointer"
         >
           {user && user.name ? (

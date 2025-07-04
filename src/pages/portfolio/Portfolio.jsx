@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -9,12 +12,15 @@ import {
 import CaseStudy from "./CaseStudy";
 import {
   caseStudies,
-  portfolioImages,
   testimonials,
 } from "./portfolioData";
 import ImageCard from "./ImageCard";
 import TestimonialCard from "./TestimonialCard";
 import { Link } from "react-router-dom";
+import {
+  getPorfolio,
+  getSettings,
+} from "../../services/settings";
 
 const Portfolio = () => {
   const [
@@ -22,13 +28,37 @@ const Portfolio = () => {
     setCurrentTestimonial,
   ] = useState(0);
 
+  const [portfolioBanner, setPortfolioBanner] =
+    useState();
+
+  const [portfolioImages, setPortfolioImages] =
+    useState([]);
+
+  const fetchSettings = async () => {
+    const response = await getSettings();
+    setPortfolioBanner(
+      response.portfolioBannerUrl
+    );
+  };
+
+  const fetchPorfolio = async () => {
+    const response = await getPorfolio();
+    setPortfolioImages(response);
+    console.log("portfolil: ", response);
+  };
+
+  useEffect(() => {
+    fetchSettings();
+    fetchPorfolio();
+  }, []);
+
   return (
     <div className="min-h-screen ">
       {/* Hero Section */}
       <section className="relative h-screen">
         <div className="absolute inset-0">
           <img
-            src="https://imgs.search.brave.com/oNMd8cCJswnXmCGhK5lfvMX1A01PnzPnKN9sQNueF_g/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by90cmFkaXRpb25h/bC1pbmRpYW4td2Vk/ZGluZy1jZXJlbW9u/eS1ncm9vbS1icmlk/ZS1oYW5kXzc1NjQ4/LTM2ODYuanBnP3Nl/bXQ9YWlzX2h5YnJp/ZA"
+            src={portfolioBanner}
             alt="Wedding Stage"
             className="w-full h-full object-cover"
           />
@@ -78,20 +108,18 @@ const Portfolio = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {portfolioImages.map(
-              (image, index) => (
-                <ImageCard
-                  key={index}
-                  image={image}
-                  index={index}
-                />
-              )
-            )}
+            {portfolioImages.map((image) => (
+              <ImageCard
+                key={image.id}
+                image={image}
+                index={image.id}
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Video Showcase */}
+      {/* Video Showcase
       <section className="py-20 bg-black text-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -118,7 +146,7 @@ const Portfolio = () => {
             </motion.button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonials */}
       <section className="py-20 bg-black text-white">

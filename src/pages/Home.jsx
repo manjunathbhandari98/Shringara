@@ -1,17 +1,13 @@
-import React, {
-  useState,
-  useEffect,
-} from "react";
+import { useEffect, useState } from "react";
 import "../assets/styles/header-animation.css";
-import HeroImage from "../assets/images/home-banner.png";
+// import HeroImage from "../assets/images/home-banner.png";
+import { useNavigate } from "react-router-dom";
 import "../assets/styles/flower-border.css";
 import Button from "../components/Button";
-import MobileBanner from "../assets/images/mobile-banner.png";
-import WhyChooseUs from "./WhyChooseUs";
+import { getSettings } from "../services/settings";
 import FeaturedServices from "./FeaturedServices";
 import Testimonials from "./Testimonials";
-import ContactForm from "./ContactForm";
-import { useNavigate } from "react-router-dom";
+import WhyChooseUs from "./WhyChooseUs";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -25,40 +21,43 @@ const Home = () => {
     "Elegant Designs, Memorable Events",
     "Your Perfect Venue, Perfectly Styled",
   ]; // Add more phrases as needed
-  const [currentPhrase, setCurrentPhrase] =
-    useState(0);
+  const [currentPhrase, setCurrentPhrase] = useState(0);
 
   // banner image based on window size (for desktop and mobile)
-  const [bgImage, setBgImage] =
-    useState(HeroImage);
+  const [bgImage, setBgImage] = useState();
+
+  const fetchSettings = async () => {
+    const response = await getSettings();
+    setBgImage(response.homeBannerUrl);
+  };
 
   useEffect(() => {
-    const updateImage = () => {
-      setBgImage(
-        window.innerWidth > 640
-          ? HeroImage
-          : MobileBanner
-      );
-    };
+    fetchSettings();
 
-    updateImage();
-    window.addEventListener(
-      "resize",
-      updateImage
-    );
+    // const updateImage = () => {
+    //   setBgImage(
+    //     window.innerWidth > 640
+    //       ? HeroImage
+    //       : MobileBanner
+    //   );
+    // };
 
-    return () =>
-      window.removeEventListener(
-        "resize",
-        updateImage
-      );
+    // updateImage();
+    // window.addEventListener(
+    //   "resize",
+    //   updateImage
+    // );
+
+    // return () =>
+    //   window.removeEventListener(
+    //     "resize",
+    //     updateImage
+    //   );
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentPhrase(
-        (prev) => (prev + 1) % phrases.length
-      );
+      setCurrentPhrase((prev) => (prev + 1) % phrases.length);
     }, 4000); // Change phrase every 4 seconds
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, [phrases.length]);

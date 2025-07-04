@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 import {
   motion,
   AnimatePresence,
@@ -10,6 +13,7 @@ import {
 } from "lucide-react";
 import { sendAMessage } from "../services/messageService";
 import { useUser } from "../hooks/useUser";
+import { getSettings } from "../services/settings";
 
 const Contact = () => {
   const [success, setSuccess] = useState();
@@ -19,8 +23,26 @@ const Contact = () => {
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
+    subject: "",
     message: "",
   });
+
+  const [appInfo, setAppInfo] = useState({
+    email: "",
+    phone: "",
+  });
+
+  const fetchSettings = async () => {
+    const response = await getSettings();
+    setAppInfo({
+      email: response.email,
+      phone: response.phone,
+    });
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -36,17 +58,19 @@ const Contact = () => {
       const message = {
         name: formData.name,
         email: formData.email,
-        message: formData.message,
+        subject: formData.subject,
+        conversation: [
+          { content: formData.message },
+        ],
       };
 
-      const response = await sendAMessage(
-        message
-      );
+      await sendAMessage(message);
 
       setSuccess("Message Sent successfully!");
       setFormData({
         name: user?.name || "",
         email: user?.email || "",
+        subject: "",
         message: "",
       });
 
@@ -91,13 +115,13 @@ const Contact = () => {
           <div className="flex items-center space-x-4">
             <Mail className="w-6 h-6 text-yellow-400" />
             <p className="text-lg">
-              info@shringara.com
+              {appInfo.email}
             </p>
           </div>
           <div className="flex items-center space-x-4">
             <Phone className="w-6 h-6 text-yellow-400" />
             <p className="text-lg">
-              +938-489-8384
+              {appInfo.phone}
             </p>
           </div>
         </div>
@@ -121,6 +145,15 @@ const Contact = () => {
             name="email"
             placeholder="Your Email"
             value={formData.email}
+            onChange={handleChange}
+            required
+            className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"
+          />
+          <input
+            type="text"
+            name="subject"
+            placeholder="Subject"
+            value={formData.subject}
             onChange={handleChange}
             required
             className="w-full p-3 bg-gray-700 bg-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"

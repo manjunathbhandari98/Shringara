@@ -14,7 +14,7 @@ const ImageCard = ({ image, index }) => {
       className="relative overflow-hidden rounded-xl group"
     >
       <img
-        src={image.url}
+        src={image.imageUrl}
         alt={image.title}
         className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
       />
@@ -24,7 +24,7 @@ const ImageCard = ({ image, index }) => {
             {image.title}
           </h3>
           <p className="text-sm text-white/80">
-            {image.category}
+            {image.services.name}
           </p>
         </div>
       </div>

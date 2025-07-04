@@ -1,8 +1,25 @@
-import React from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { getSettings } from "../services/settings";
 
 const AboutUs = () => {
+  const [appName, setAppName] = useState();
+
+  const fetchSettings = async () => {
+    const response = await getSettings();
+    console.log(response);
+
+    setAppName(response.appName);
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white p-6">
       <motion.div
@@ -15,7 +32,7 @@ const AboutUs = () => {
         <h2 className="text-4xl font-bold text-center mb-6">
           ✨ About{" "}
           <span className="text-yellow-400">
-            Shringara Decorators
+            {`${appName} Decorators`}
           </span>
         </h2>
 
@@ -23,7 +40,7 @@ const AboutUs = () => {
         <p className="text-gray-300 text-center mb-8">
           At{" "}
           <span className="text-yellow-400">
-            Shringara Decorators
+            {`${appName} Decorators`}
           </span>
           , we bring your dreams to life with
           mesmerizing decorations for every

@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env
-  .VITE_REACT_APP_API_URL;
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 // Function to store JWT token in localStorage
 const setAuthToken = (token) => {
@@ -9,8 +8,7 @@ const setAuthToken = (token) => {
 };
 
 // Function to retrieve JWT token from localStorage
-export const getAuthToken = () =>
-  localStorage.getItem("authToken");
+export const getAuthToken = () => localStorage.getItem("authToken");
 
 // Function to remove JWT token (Logout)
 export const logoutUser = () => {
@@ -21,15 +19,13 @@ export const logoutUser = () => {
 // Signup API call
 export const signupUser = async (userData) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/auth/register`,
-      userData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(`${BASE_URL}/auth/register`, userData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("signup");
+
     return response.data;
   } catch (error) {
     throw (
@@ -57,6 +53,8 @@ export const loginUser = async (credentials) => {
     if (token) {
       setAuthToken(token);
     }
+    console.log("login");
+
     return response.data;
   } catch (error) {
     throw (
@@ -73,20 +71,15 @@ export const getUserInfo = async () => {
   if (!token) return null; // Return null if no token is found
 
   try {
-    const response = await axios.get(
-      `${BASE_URL}/auth/user`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`${BASE_URL}/auth/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     return response.data; // Returns user object
   } catch (error) {
-    console.error(
-      "Error fetching user info:",
-      error
-    );
+    console.error("Error fetching user info:", error);
     logoutUser(); // Logout if token is invalid
     return null;
   }
@@ -97,40 +90,32 @@ export const updateUser = async (updateData) => {
   const token = getAuthToken();
   if (!token) return null;
   try {
-    const response = await axios.put(
-      `${BASE_URL}/auth/update`,
-      updateData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.put(`${BASE_URL}/auth/update`, updateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
     return response.data;
   } catch (error) {
     throw (
       error.response?.data || {
-        message:
-          "Failed to update user information",
+        message: "Failed to update user information",
       }
     );
   }
 };
 
 // Secure API request with JWT token
-export const getProtectedData = async (
-  endpoint
-) => {
+export const getProtectedData = async (endpoint) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/${endpoint}`,
-      {
-        headers: {
-          Authorization: `Bearer ${getAuthToken()}`,
-        },
-      }
-    );
+    const response = await axios.get(`${BASE_URL}/${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+
     return response.data;
   } catch (error) {
     throw (

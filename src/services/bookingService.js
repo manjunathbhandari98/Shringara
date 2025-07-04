@@ -1,22 +1,15 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env
-  .VITE_REACT_APP_API_URL;
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 // Create a booking
-export const bookAnEvent = async (
-  bookingInfo
-) => {
+export const bookAnEvent = async (bookingInfo) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/bookings`,
-      bookingInfo,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(`${BASE_URL}/bookings`, bookingInfo, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     throw (
@@ -30,9 +23,7 @@ export const bookAnEvent = async (
 // Get all bookings
 export const getAllBookings = async () => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/bookings`
-    );
+    const response = await axios.get(`${BASE_URL}/bookings`);
     return response.data;
   } catch (error) {
     throw (
@@ -46,9 +37,7 @@ export const getAllBookings = async () => {
 // Get booking by ID
 export const getBookingById = async (id) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/bookings/${id}`
-    );
+    const response = await axios.get(`${BASE_URL}/bookings/${id}`);
     return response.data;
   } catch (error) {
     throw (
@@ -60,10 +49,7 @@ export const getBookingById = async (id) => {
 };
 
 // Update booking
-export const updateBooking = async (
-  id,
-  updatedBooking
-) => {
+export const updateBooking = async (id, updatedBooking) => {
   try {
     const response = await axios.put(
       `${BASE_URL}/bookings/${id}`,
@@ -87,9 +73,7 @@ export const updateBooking = async (
 // Delete booking
 export const deleteBooking = async (id) => {
   try {
-    await axios.delete(
-      `${BASE_URL}/bookings/${id}`
-    );
+    await axios.delete(`${BASE_URL}/bookings/${id}`);
     return {
       message: "Booking deleted successfully",
     };
